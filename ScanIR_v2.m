@@ -286,7 +286,7 @@ set(hObject, 'Units', OldUnits);
 
 % display MARL logo in axes_logo
 axes(handles.plotLogo)
-[img, map, alphachannel] = imread('MARL_logo.png');
+[img, map, alphachannel] = imread('CINTRA_Logo.png');
 image(img, 'AlphaData', alphachannel);
 axis off
 axis image
@@ -688,11 +688,11 @@ if (plottype == 1) %time domain overlay
     handles.smooth_popup.Enable = 'off';
     hold off
     for i = plotchls
-        if i<=size(handles.colors,1)
-            col = handles.colors(i,:);
-        else
+%         if i<=size(handles.colors,1)
+%             col = handles.colors(i,:);
+%         else
             col = rand(1,3);
-        end
+%         end
         plot(handles.plotarea, plot_data(:, i),...
             'Color',col);
         hold on
@@ -717,11 +717,11 @@ elseif (plottype == 2) %frequency - overlay
         end
     end
     for i = plotchls
-        if i<=size(handles.colors,1)
-            col = handles.colors(i,:);
-        else
+%         if i<=size(handles.colors,1)
+%             col = handles.colors(i,:);
+%         else
             col = rand(1,3);
-        end
+%         end
         r = plot_data(:,i);
         [m, ind] = max(abs(r(:)));
         strt = max(1, ind-offset);
@@ -1315,17 +1315,17 @@ if (handles.app.currID == size(handles.data,2))
 end
 
 set(handles.warn_text,'Visible','on');
-set(handles.warn_text,'String','Computing analysis parameters');
-drawnow;
-if ~handles.lowSNR
-    handles = runAnalysis(handles);
-    disp('Running Analysis ...');
-    set(handles.warn_text,'String','');
-else
-    warning('THE SNR IS TOO LOW TO COMPUTE THE ANALYSIS');
-    set(handles.warn_text,'String','ATTENTION: LOW SNR - retake the measurement to compute analysis parameters');
-    handles = resetFields(handles);
-end
+% set(handles.warn_text,'String','Computing analysis parameters');
+% drawnow;
+% if ~handles.lowSNR
+%     handles = runAnalysis(handles);
+%     disp('Running Analysis ...');
+%     set(handles.warn_text,'String','');
+% else
+%     warning('THE SNR IS TOO LOW TO COMPUTE THE ANALYSIS');
+%     set(handles.warn_text,'String','ATTENTION: LOW SNR - retake the measurement to compute analysis parameters');
+%     handles = resetFields(handles);
+% end
 drawnow;
 plotresponse(hObject,handles);
 set(handles.warn_text,'Visible','off');
@@ -1365,11 +1365,19 @@ if (handles.app.inMode == 2) % in HRIR mode
         set(handles.forwardButton, 'Enable', 'off');
         handles = calcModID(hObject, handles);        
         if (handles.app.outMode == 1) % single channel output mode
-            elIndex = ceil(handles.modID/length(handles.hrir_az));            
-            if (mod(handles.modID,length(handles.hrir_az)) == 0)
-                azIndex = length(handles.hrir_az);
+%             elIndex = ceil(handles.modID/length(handles.hrir_az));            
+%             if (mod(handles.modID,length(handles.hrir_az)) == 0)
+%                 azIndex = length(handles.hrir_az);
+%             else
+%                 azIndex = mod(handles.modID,length(handles.hrir_az));
+%             end
+            
+            % Next measure is next elevation position
+            azIndex = ceil(handles.modID/length(handles.hrir_el));           
+            if (mod(handles.modID,length(handles.hrir_el)) == 0)
+                elIndex = length(handles.hrir_el);
             else
-                azIndex = mod(handles.modID,length(handles.hrir_az));
+                elIndex = mod(handles.modID,length(handles.hrir_el));
             end
         elseif (handles.app.outMode == 2 ) % multichannel output mode
             azIndex = handles.modID;
